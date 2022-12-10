@@ -10,4 +10,4 @@ Part 1 solved with `Enum.reduce/3` with pattern-matching. 2nd part solved with `
 
 ### Day 2: I Was Told There Would Be No Math
 
-Part 1 solved with `Enum.reduce/3`, `Enum.min/1`, and simple arithmetics.
+Part 1 solved with `Enum.reduce/3`, `Enum.min/1`, and simple arithmetics. 2nd part solved in a very similar way, just another set of calculations.
