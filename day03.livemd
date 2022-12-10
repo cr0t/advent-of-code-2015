@@ -1,0 +1,51 @@
+# Day 3: Perfectly Spherical Houses in a Vacuum
+
+```elixir
+Mix.install([{:kino, "~> 0.8.0"}])
+```
+
+## Input
+
+```elixir
+input = Kino.Input.textarea("Please paste your input:")
+```
+
+```elixir
+moves =
+  input
+  |> Kino.Input.read()
+  |> String.codepoints()
+```
+
+## Part 1
+
+Santa is delivering presents to an infinite two-dimensional grid of houses.
+
+He begins by delivering a present to the house at his starting location, and then an elf at the North Pole calls him via radio and tells him where to move next. Moves are always exactly one house to the north (`^`), south (`v`), east (`>`), or west (`<`). After each move, he delivers another present to the house at his new location.
+
+However, the elf back at the north pole has had a little too much eggnog, and so his directions are a little off, and Santa ends up visiting some houses more than once. How many houses receive **at least one present?**
+
+For example:
+
+* `>` delivers presents to `2` houses: one at the starting location, and one to the east.
+* `^>v<` delivers presents to `4` houses in a square, including twice to the house at his starting/ending location.
+* `^v^v^v^v^v` delivers a bunch of presents to some very lucky children at only `2` houses.
+
+```elixir
+moves
+|> Enum.reduce({MapSet.new(), {0, 0}}, fn move, {visited, {x, y} = coord} ->
+  visited = MapSet.put(visited, coord)
+
+  coord =
+    case move do
+      "^" -> {x, y + 1}
+      ">" -> {x + 1, y}
+      "v" -> {x, y - 1}
+      "<" -> {x - 1, y}
+    end
+
+  {visited, coord}
+end)
+|> elem(0)
+|> MapSet.size()
+```
