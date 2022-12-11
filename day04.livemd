@@ -1,0 +1,39 @@
+# Day 4: The Ideal Stocking Stuffer
+
+```elixir
+Mix.install([{:kino, "~> 0.8.0"}])
+```
+
+## Input
+
+```elixir
+input = Kino.Input.textarea("Please paste your input:")
+```
+
+## Part 1
+
+Santa needs help [mining](https://en.wikipedia.org/wiki/Bitcoin#Mining) some AdventCoins (very similar to [bitcoins](https://en.wikipedia.org/wiki/Bitcoin)) to use as gifts for all the economically forward-thinking little girls and boys.
+
+To do this, he needs to find [MD5](https://en.wikipedia.org/wiki/MD5) hashes which, in [hexadecimal](https://en.wikipedia.org/wiki/Hexadecimal), start with at least **five zeroes**. The input to the MD5 hash is some secret key (your puzzle input, given below) followed by a number in decimal. To mine AdventCoins, you must find Santa the lowest positive number (no leading zeroes: `1`, `2`, `3`, ...) that produces such a hash.
+
+For example:
+
+* If your secret key is `abcdef`, the answer is `609043`, because the MD5 hash of `abcdef609043` starts with five zeroes (`000001dbbfa...`), and it is the lowest such number to do so.
+* If your secret key is `pqrstuv`, the lowest number it combines with to make an MD5 hash starting with five zeroes is `1048970`; that is, the MD5 hash of `pqrstuv1048970` looks like `000006136ef...`.
+
+```elixir
+defmodule John do
+  def ripper(key), do: brute(key, 1, hash(key, 1))
+
+  # check if calculated md5 hash starts with 20 zero bits
+  # otherwise add 1 to n and check again, until we nail it
+  defp brute(_key, n, <<0::size(20), _::bitstring>>), do: n
+  defp brute(key, n, _), do: brute(key, n + 1, hash(key, n + 1))
+
+  defp hash(key, suffix), do: :crypto.hash(:md5, "#{key}#{suffix}")
+end
+
+input
+|> Kino.Input.read()
+|> John.ripper()
+```
