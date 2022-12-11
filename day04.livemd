@@ -23,17 +23,31 @@ For example:
 
 ```elixir
 defmodule John do
-  def ripper(key), do: brute(key, 1, hash(key, 1))
+  def ripper(key, zeros \\ 5), do: brute(key, 1, zeros * 4)
 
-  # check if calculated md5 hash starts with 20 zero bits
+  # check if calculated md5 hash starts with a given number of zero bits,
   # otherwise add 1 to n and check again, until we nail it
-  defp brute(_key, n, <<0::size(20), _::bitstring>>), do: n
-  defp brute(key, n, _), do: brute(key, n + 1, hash(key, n + 1))
+  defp brute(key, n, bits) do
+    hash = :crypto.hash(:md5, "#{key}#{n}")
 
-  defp hash(key, suffix), do: :crypto.hash(:md5, "#{key}#{suffix}")
+    case hash do
+      <<0::size(bits), _::bitstring>> -> n
+      _ -> brute(key, n + 1, bits)
+    end
+  end
 end
 
 input
 |> Kino.Input.read()
 |> John.ripper()
+```
+
+## Part 2
+
+Now find one that starts with **six zeroes**.
+
+```elixir
+input
+|> Kino.Input.read()
+|> John.ripper(6)
 ```
