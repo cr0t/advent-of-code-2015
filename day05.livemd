@@ -1,0 +1,61 @@
+# Day 5: Doesn't He Have Intern-Elves For This?
+
+```elixir
+Mix.install([{:kino, "~> 0.8.0"}])
+```
+
+## Input
+
+```elixir
+input = Kino.Input.textarea("Please paste your input:")
+```
+
+```elixir
+defmodule Day5Shared do
+  def parse(input) do
+    input
+    |> Kino.Input.read()
+    |> String.split("\n")
+  end
+end
+```
+
+## Part 1
+
+Santa needs help figuring out which strings in his text file are naughty or nice.
+
+A **nice string** is one with all of the following properties:
+
+* It contains at least three vowels (`aeiou` only), like `aei`, `xazegov`, or `aeiouaeiouaeiou`.
+* It contains at least one letter that appears twice in a row, like `xx`, `abcdde` (`dd`), or `aabbccdd` (`aa`, `bb`, `cc`, or `dd`).
+* It does **not** contain the strings `ab`, `cd`, `pq`, or `xy`, even if they are part of one of the other requirements.
+
+For example:
+
+* `ugknbfddgicrmopn` is nice because it has at least three vowels (`u...i...o...`), a double letter (`...dd...`), and none of the disallowed substrings.
+* `aaa` is nice because it has at least three vowels and a double letter, even though the letters used by different rules overlap.
+* `jchzalrnumimnmhp` is naughty because it has no double letter.
+* `haegwjzuvuyypxyu` is naughty because it contains the string `xy`.
+* `dvszwmarrgswjxmb` is naughty because it contains only one vowel.
+
+How many strings are nice?
+
+```elixir
+defmodule Day5Part1 do
+  def classify(string),
+    do: if(nice?(string), do: :nice, else: :naughty)
+
+  defp nice?(string) do
+    vowels = Regex.scan(~r/[aeiou]/, string)
+    double_trouble = Regex.scan(~r/(.)\1/, string)
+    naughty_pairs = Regex.scan(~r/ab|cd|pq|xy/, string)
+
+    length(vowels) >= 3 and length(double_trouble) >= 1 and length(naughty_pairs) == 0
+  end
+end
+
+input
+|> Day5Shared.parse()
+|> Enum.map(&Day5Part1.classify/1)
+|> Enum.count(&(&1 == :nice))
+```
