@@ -21,3 +21,7 @@ Part 1 solved `MapSet` and `Enum.reduce/3`; in the accumulator we store visited 
 ### Day 4: The Ideal Stocking Stuffer
 
 Part 1 solved with pattern-matching on the first 20 bit of bitstring that get returned by `:crypto.hash(:md5, "...")`, plus a bit of recursion. 2nd part solved the same way (though initial solution got extended to check more bits in the head of a hash).
+
+### Day 5: Doesn't He Have Intern-Elves For This?
+
+Both parts solved with `Regex`-es. Important to note that we rely on regex **back-references** to find pairs and repeatable groups. For example, `/(hello) \1/ =~ "hello hello"`; here `\1` refers to the first declared capture group `(hello)`.
