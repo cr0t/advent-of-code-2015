@@ -25,3 +25,7 @@ Part 1 solved with pattern-matching on the first 20 bit of bitstring that get re
 ### Day 5: Doesn't He Have Intern-Elves For This?
 
 Both parts solved with `Regex`-es. Important to note that we rely on regex **back-references** to find pairs and repeatable groups. For example, `/(hello) \1/ =~ "hello hello"`; here `\1` refers to the first declared capture group `(hello)`.
+
+### Day 6: Probably a Fire Hazard
+
+Both parts solved with quite straightforward `Enum.reduce` and `Map.update(map, key, default, fun)` approach. Maybe not very performant (part 1 get calculated in 26-27 seconds, part 2 in 33-34 seconds), but works. We do not initialize light grid, because we leverage `default` argument of `Map.update/4` function. Input parsed with `Regex.run/2` and pattern matching on matched groups.
