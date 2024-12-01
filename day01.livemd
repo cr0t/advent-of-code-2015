@@ -1,13 +1,27 @@
 # Day 1: Not Quite Lisp
 
 ```elixir
-Mix.install([{:kino, "~> 0.8.0"}])
+Mix.install([
+  {:kino, "~> 0.14.2"}
+])
 ```
 
 ## Input
 
 ```elixir
-input = Kino.Input.textarea("Please paste your input:")
+input = Kino.Input.textarea("Please, paste your input:")
+```
+
+```elixir
+defmodule Day1Shared do
+  def parse(input) do
+    input
+    |> Kino.Input.read()
+    |> String.codepoints()
+  end
+end
+
+Day1Shared.parse(input)
 ```
 
 ## Part 1
@@ -18,9 +32,9 @@ Collect stars by helping Santa solve puzzles. Two puzzles will be made available
 
 Here's an easy puzzle to warm you up.
 
-Santa is trying to deliver presents in a large apartment building, but he can't find the right floor - the directions he got are a little confusing. He starts on the ground floor (floor 0) and then follows the instructions one character at a time.
+Santa is trying to deliver presents in a large apartment building, but he can't find the right floor - the directions he got are a little confusing. He starts on the ground floor (floor `0`) and then follows the instructions one character at a time.
 
-An opening parenthesis, `(`, means he should go up one floor, and a closing parenthesis, `),` means he should go down one floor.
+An opening parenthesis, `(`, means he should go up one floor, and a closing parenthesis, `)`, means he should go down one floor.
 
 The apartment building is very tall, and the basement is very deep; he will never find the top or bottom floors.
 
@@ -36,8 +50,7 @@ To **what floor** do the instructions take Santa?
 
 ```elixir
 input
-|> Kino.Input.read()
-|> String.codepoints()
+|> Day1Shared.parse()
 |> Enum.reduce(0, fn
   "(", floor -> floor + 1
   ")", floor -> floor - 1
@@ -57,12 +70,11 @@ What is the **position** of the character that causes Santa to first enter the b
 
 ```elixir
 input
-|> Kino.Input.read()
-|> String.codepoints()
-|> Enum.reduce_while({0, 0}, fn
-  "(", {floor, i} when floor >= 0 -> {:cont, {floor + 1, i + 1}}
-  ")", {floor, i} when floor >= 0 -> {:cont, {floor - 1, i + 1}}
-  _, acc -> {:halt, acc}
+|> Day1Shared.parse()
+|> Enum.with_index()
+|> Enum.reduce_while(0, fn
+  {"(", _}, floor when floor >= 0 -> {:cont, floor + 1}
+  {")", _}, floor when floor >= 0 -> {:cont, floor - 1}
+  {_, idx}, _ -> {:halt, idx}
 end)
-|> elem(1)
 ```
